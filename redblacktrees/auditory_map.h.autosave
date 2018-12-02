@@ -531,12 +531,12 @@ public:
     iterator(const iterator&);
     iterator& next();
     inline Key key(){
-        return *this->key;
+        return this->key;
     }
     inline Value value(){
         iterator i = this;
         Node d = *this;
-        return *this->value;
+        return this->value;
     }
     iterator& operator=(const iterator&);
     bool operator!= (const iterator&) const;
