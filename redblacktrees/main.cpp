@@ -1,5 +1,6 @@
 #include <iostream>
 #include <auditory_map.h>
+#include <cassert>
 using namespace std;
 
 int main()
@@ -7,19 +8,17 @@ int main()
     AuditoryMap <int, char>map;
     map.insert(401, 'a');
     map.insert(402, 'b');
+    assert(map.contains(401));
+    assert(map.contains(402)); //inserting
+    assert(!map.contains(808));     //unexisted key
+
+    map.clear();
+    assert(map.size()==0);      //clear function
     map.insert(403, 'c');
     map.insert(404, 'd');
     map.insert(405, 'e');
-    map.displayInfo();
-    Iterator<int, char> i1 = map.begin();
-    Iterator<int, char> i2 = map.end();
-    //bool flag = (*i1).value;
-    cout << i1.value();
-    cout << i1.next().getKey() << endl;
-    cout << i1.next().getKey()<< endl;
-    cout << i1.next().getKey() << endl;
-    cout << i1.next().getKey() << endl;
-    cout << i2.getKey() << endl;
-    cout << map.size();
+    assert(map.contains(405));
+    map.deleteKey(404);
+    assert(!map.contains(404));     // deleting single key
     return 0;
 }
