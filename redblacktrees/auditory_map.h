@@ -24,7 +24,7 @@ class AuditoryMap
     friend class Iterator<Key,Value>;
 
     //typedef Iterator<Key,Value> const_iterator;
-    Value& operator[](const Key);
+    Value operator[](const Key);
 
     Iterator<Key, Value> end() {return Iterator<Key, Value>(this->Maximum(root));}
     Iterator<Key, Value> begin() {return Iterator<Key, Value>(this->Minimum(root));}
@@ -368,7 +368,7 @@ class AuditoryMap
 
 
 
-public:
+
   enum NodeColour
     {
         RED,
@@ -386,6 +386,54 @@ public:
     };
     Node *root;
 
+  void displayInfo(Node *node, int spaces)
+    {
+        if (!node)
+        {
+            return;
+        }
+
+        displayInfo(node->left, spaces + 1);
+
+        for (int i = 0; i < spaces; ++i)
+        {
+            cout << "\t";
+        }
+
+        cout << node->key << (node->colour ? "B" : "R") << endl;						//отображение ключа вместе с цветом
+
+        displayInfo(node->right, spaces + 1);
+    }
+
+  int size(){
+      return count;
+  }
+
+  inline void clear()
+  {
+    delete (root);
+      root = NULL;
+    //root = new Node;
+    //root->parent = nullptr;
+    count = 0;
+  }
+
+private:
+  int count;
+  typename AuditoryMap<Key, Value>::Node*
+  isKey(Node *x, Key key)
+  {
+      while(x != nullptr && key != x->key)
+      {
+          if(key < x->key)
+              x = x->left;
+          else
+              x = x->right;
+      }
+      return x;
+
+
+  }
   void leftRotate(Node *x)
     {
         Node *y;
@@ -488,88 +536,15 @@ public:
         return tree;
     }
 
-  void displayInfo(Node *node, int spaces)
-    {
-        if (!node)
-        {
-            return;
-        }
-
-        displayInfo(node->left, spaces + 1);
-
-        for (int i = 0; i < spaces; ++i)
-        {
-            cout << "\t";
-        }
-
-        cout << node->key << (node->colour ? "B" : "R") << endl;						//отображение ключа вместе с цветом
-
-        displayInfo(node->right, spaces + 1);
-    }
-
-  int size(){
-      return count;
-  }
-
-  inline void clear()
-  {
-    delete (root);
-      root = NULL;
-    //root = new Node;
-    //root->parent = nullptr;
-    count = 0;
-  }
-
-private:
-  int count;
-  Node& findNode(const Key& key)
-    {
-        Node *node = root;
-
-        while (node)
-        {
-            if (key < node->key  )
-            {
-                node = node->left;
-            }
-            else if (key > node->key )
-            {
-                node = node->right;
-            }
-
-           else
-           {
-                return node->value;
-           }
-
-        }
-
-        throw runtime_error("No value with requested key");
-    }
-
 };
 
-/*template<class T, class N>
-N& AuditoryMap<T, N>::operator[](const T _key)
+template <typename keyType, typename valueType> valueType AuditoryMap<keyType, valueType>::operator [](keyType key)
 {
-    Node node = findNode(_key);
-    Node* curr = &node;
-    if (!curr->key)
-    {
-        curr->key = *(new T(_key));
-        curr->value = *(new N);
-        curr->colour = BLACK;                 // maybe black?????
-        curr->left = new Node;
-
-        curr->right = new Node;
-
-        ++count;
-
-        insert(_key);
-    }
-
-    return curr->value;
-}*/
+    Node *pointer = NULL;
+    pointer = isKey(root,key);
+    if(pointer != NULL)
+        return pointer->value;
+}
 
 template<typename Key, typename valueType> class Iterator
 {

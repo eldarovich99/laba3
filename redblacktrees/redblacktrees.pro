@@ -7,5 +7,4 @@ SOURCES += \
         main.cpp
 
 HEADERS += \
-    mymuuuup.h \
     auditory_map.h

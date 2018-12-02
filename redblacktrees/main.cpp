@@ -8,8 +8,8 @@ int main()
     AuditoryMap <int, char>map;
     map.insert(401, 'a');
     map.insert(402, 'b');
-    assert(map.contains(401));
-    assert(map.contains(402)); //inserting
+    assert(map.contains(401) && map[401]=='a');      //inserting
+    assert(map.contains(402));
     assert(!map.contains(808));     //unexisted key
 
     map.clear();
