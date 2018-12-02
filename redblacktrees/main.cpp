@@ -11,14 +11,14 @@ int main()
     map.insert(404, 'd');
     map.insert(405, 'e');
     map.displayInfo();
-    AuditoryMap<int, char>::iterator i1 = map.begin();
-    AuditoryMap<int, char>::iterator i2 = map.end();
-    bool flag = (*i1).value;
-    cout << i1.next().key();
-    //cout << i1.next().value() << endl;
-    //cout << i1.next().value() << endl;
-    cout << (*i1.next()).value << endl;
-    cout << (*i1.next()).value << endl;
-    cout << (*i2).value << endl;
+    Iterator<int, char> i1 = map.begin();
+    Iterator<int, char> i2 = map.end();
+    //bool flag = (*i1).value;
+    cout << i1.value();
+    cout << i1.next().getKey() << endl;
+    cout << i1.next().getKey()<< endl;
+    cout << i1.next().getKey() << endl;
+    cout << i1.next().getKey() << endl;
+    cout << i2.getKey() << endl;
     return 0;
 }

@@ -3,7 +3,7 @@
 
 #include <iostream>
 using namespace std;
-
+template <typename Key, typename Value> class Iterator;
 template<typename Key, typename Value>
 class AuditoryMap
 {
@@ -12,12 +12,13 @@ class AuditoryMap
     {
         root = NULL;
     }
-    class iterator;
+    friend class Iterator<Key,Value>;
 
-    typedef iterator const_iterator;
+    //typedef Iterator<Key,Value> const_iterator;
 
-    iterator begin();
-    iterator end();
+
+    Iterator<Key, Value> end() {return Iterator<Key, Value>(this->Maximum(root));}
+    Iterator<Key, Value> begin() {return Iterator<Key, Value>(this->Minimum(root));}
     template<class T, class N>
     friend std::ostream& operator<< (std::ostream&, AuditoryMap&);
 
@@ -499,6 +500,15 @@ public:
         return tree;
     }
 
+  Node *Maximum(Node *tree)
+    {
+        while (tree->right)
+        {
+            tree = tree->right;
+        }
+
+        return tree;
+    }
 
   void displayInfo(Node *node, int spaces)
     {
@@ -523,153 +533,77 @@ public:
 
 };
 
-template<class Key, class Value>
-class AuditoryMap<Key, Value>::iterator : std::iterator< std::input_iterator_tag, AuditoryMap<Key, Value>::Node>
+
+template<typename Key, typename valueType> class Iterator
 {
-    friend AuditoryMap<Key, Value>;
 public:
-    iterator(const iterator&);
-    iterator& next();
-    inline Key key(){
-        return *this->key;
-    }
-    inline Value value(){
-        iterator i = this;
-        Node d = *this;
-        return *this->value;
-    }
-    iterator& operator=(const iterator&);
-    bool operator!= (const iterator&) const;
-    Node& operator*() const;
-    Node& operator->() const;
-
-private:
-    int count = 0;
-    iterator(Node*);
-    Node* _pointer;
-};
-
-template<class T, class N>
-inline typename AuditoryMap<T, N>::iterator AuditoryMap<T, N>::begin()
-{
-
-    if (!root->key)                  //some doubtful changes here
-        return iterator(root);
-
-    auto _point = root;
-
-    while (_point->left)
-        _point = _point->left;
-
-    return iterator(_point);
-}
-
-/*template<class T, class N>
-int AuditoryMap<T, N>::iterator::value(){
+    friend struct AuditoryMap<Key, valueType>::Node;
+    Iterator();
+    #define NIL &sentinel           /* all leafs are sentinels */
+    typename AuditoryMap<Key, valueType>::Node sentinel;
+    Iterator(typename AuditoryMap<Key, valueType>::Node *x);
+    Iterator operator++(int);
+    Iterator next();
+    Key getKey();
+    valueType value();
+    typename AuditoryMap<Key, valueType>::Node *currNode;
 
 };
 
-template<class Key, class Value>
-Key AuditoryMap<Key, Value>::iterator::key()
-{/*
-    if (!root->key)                  //some doubtful changes here
-        return iterator(root);
-
-    auto _point = root;
-
-    while (_point->left)
-        _point = _point->left;
-
-    return iterator(root);*/
-//}
-
-template<class T, class N>
-typename AuditoryMap<T, N>::iterator AuditoryMap<T, N>::end()
+template <typename Key, typename valueType>
+Iterator<Key, valueType>::Iterator(typename AuditoryMap<Key, valueType>::Node *x)
 {
-    if (!root->key)               // it was root->key == nullptr
-        return iterator(root);
-
-    auto _point = root;
-
-    while (_point->right)       //_point->right->key != nullptr
-        _point = _point->right;
-    //if(!_point->right)         //_point->right->value == nullptr
-       // _point = _point->left; // _point->right->value = new N;
-
-    return iterator(_point); // return iterator(_point->right);
+    currNode = x;
+    //sentinel = {0,0, nullptr, nullptr, false, NULL};
 }
 
-
-template<class T, class N>
-inline AuditoryMap<T, N>::iterator::iterator(const iterator & _other)
+template <typename Key, typename valueType>
+Iterator<Key, valueType> Iterator<Key, valueType>::operator ++(int)
 {
-    _pointer = _other._pointer;
-}
-
-template<class T, class N>
-inline AuditoryMap<T, N>::iterator::iterator(AuditoryMap<T, N>::Node* _point)
-{
-    _pointer = _point;
-}
-
-template<class T, class N>
-typename AuditoryMap<T, N>::iterator & AuditoryMap<T, N>::iterator::next()
-{
-    if (_pointer->right != nullptr)      //_pointer->right->value != nullptr
+    if(currNode->right->_key != NULL)
     {
-        _pointer = _pointer->right;
-        while (_pointer->left != nullptr && _pointer->left->value != NULL)       //(_pointer->left != nullptr && _pointer->left->value != nullptr)
-                _pointer = _pointer->left;
+        currNode = currNode->right;
+        while(currNode->left != NIL && currNode->left->_key != NULL)
+            currNode = currNode->left;
     }
     else
     {
-        while (_pointer != _pointer->parent->left)
-            _pointer = _pointer->parent;
+        while (currNode != currNode->p->left)
+            currNode = currNode->p;
+        currNode = currNode->p;
+    }
+    return *this;
+}
 
-        _pointer = _pointer->parent;
+template <typename Key, typename valueType>
+Key Iterator<Key, valueType>::getKey()
+{
+return currNode->key;
+}
+
+template <typename Key, typename valueType>
+valueType Iterator<Key, valueType>::value()
+{
+return currNode->value;
+}
+
+template<class T, class N>
+Iterator<T,N> Iterator<T,N>::next()
+{
+    if (currNode->right != nullptr)      //_pointer->right->value != nullptr
+    {
+        currNode = currNode->right;
+        while (currNode->left != nullptr && currNode->left->value != NULL)       //(_pointer->left != nullptr && _pointer->left->value != nullptr)
+                currNode = currNode->left;
+    }
+    else
+    {
+        while (currNode != currNode->parent->left)
+            currNode = currNode->parent;
+
+        currNode = currNode->parent;
     }
 
     return *this;
 }
-
-template<class T, class N>
-bool AuditoryMap<T, N>::operator==(AuditoryMap & _other)
-{
-    if(this->count != _other.count)
-        return false;
-
-    AuditoryMap<T, N>::iterator i1 = begin();
-    AuditoryMap<T, N>::iterator i2 = _other.begin();
-    for (;i1 != end(), i2 != _other.end(); ++i1, ++i2)
-        if (*(*i1).key != *(*i2).key || *(*i1).value != *(*i2).value)
-            return false;
-
-    return true;
-}
-
-template<class T, class N>
-typename AuditoryMap<T, N>::iterator & AuditoryMap<T, N>::iterator::operator=(const iterator &_other)
-{
-    _pointer = _other._pointer;
-}
-
-
-template<class T, class N>
-bool AuditoryMap<T, N>::iterator::operator!= (const iterator & _other) const
-{
-    return _pointer != _other._pointer;
-}
-
-template<class T, class N>
-inline typename AuditoryMap<T, N>::Node& AuditoryMap<T, N>::iterator::operator*() const
-{
-    return *_pointer;
-}
-
-template<class T, class N>
-inline typename AuditoryMap<T, N>::Node& AuditoryMap<T, N>::iterator::operator->() const
-{
-    return *_pointer;
-}
-
 #endif // AUDITORY_MAP_H
