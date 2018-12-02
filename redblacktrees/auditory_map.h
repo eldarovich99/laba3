@@ -5,10 +5,9 @@
 using namespace std;
 
 /*
- * to-do list
+ * to-do list:
  * copying constructor
- * deleteKey fix
- * operators [] << >>
+ * operators<< >>
  * tests*/
 
 template <typename Key, typename Value> class Iterator;
@@ -421,7 +420,7 @@ class AuditoryMap
 private:
   int count;
   typename AuditoryMap<Key, Value>::Node*
-  isKey(Node *x, Key key)
+  findNode(Node *x, Key key)
   {
       while(x != nullptr && key != x->key)
       {
@@ -541,7 +540,7 @@ private:
 template <typename keyType, typename valueType> valueType AuditoryMap<keyType, valueType>::operator [](keyType key)
 {
     Node *pointer = NULL;
-    pointer = isKey(root,key);
+    pointer = findNode(root,key);
     if(pointer != NULL)
         return pointer->value;
 }

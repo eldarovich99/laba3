@@ -48,8 +48,7 @@ OBJECTS_DIR   = release/
 SOURCES       = ../redblacktrees/main.cpp 
 OBJECTS       = release/main.o
 
-DIST          =  mymuuuup.h \
-		auditory_map.h ../redblacktrees/main.cpp
+DIST          =  auditory_map.h ../redblacktrees/main.cpp
 QMAKE_TARGET  = redblacktrees
 DESTDIR        = release/ #avoid trailing-slash linebreak
 TARGET         = redblacktrees.exe

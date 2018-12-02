@@ -48,8 +48,7 @@ OBJECTS_DIR   = debug/
 SOURCES       = ../redblacktrees/main.cpp 
 OBJECTS       = debug/main.o
 
-DIST          =  mymuuuup.h \
-		auditory_map.h ../redblacktrees/main.cpp
+DIST          =  auditory_map.h ../redblacktrees/main.cpp
 QMAKE_TARGET  = redblacktrees
 DESTDIR        = debug/ #avoid trailing-slash linebreak
 TARGET         = redblacktrees.exe
