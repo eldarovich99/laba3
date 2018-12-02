@@ -20,5 +20,6 @@ int main()
     cout << i1.next().getKey() << endl;
     cout << i1.next().getKey() << endl;
     cout << i2.getKey() << endl;
+    cout << map.size();
     return 0;
 }

@@ -10,6 +10,7 @@ class AuditoryMap
     public:
     AuditoryMap() 											//конструктор по умолчанию
     {
+        count = 0;
         root = NULL;
     }
     friend class Iterator<Key,Value>;
@@ -130,7 +131,7 @@ class AuditoryMap
 
             root->colour = BLACK;
         }
-
+        count++;
     }
 
  bool contains(const Key& key)
@@ -296,7 +297,7 @@ class AuditoryMap
 
             }
         }
-
+        count--;
     }
 
 
@@ -376,37 +377,6 @@ public:
         Node *right;
     };
     Node *root;
-    /*
-template<class T, class N>
-class MyMap<T, N>::Node
-{
-
-public:
-
-    Node();
-    Node(T, N);
-    Node(Node&);
-    Node(Node*);
-    ~Node();
-
-    T* key;
-    N* value;
-
-    Node* parent = nullptr;
-    Node* left = nullptr;
-    Node* right = nullptr;
-    bool color = true;
-
-    Node* grandparent();
-    Node* uncle();
-    Node* sibling();
-    void free();
-    bool is_leaf();
-
-    Node operator->();
-    Node& operator= (Node&);
-};Node *root;
-     */
 
   void leftRotate(Node *x)
     {
@@ -530,7 +500,11 @@ public:
     }
 
   void clear(){}
-
+  int size(){
+      return count;
+  }
+private:
+  int count;
 };
 
 
