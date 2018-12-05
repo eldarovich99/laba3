@@ -7,7 +7,7 @@ using namespace std;
 /*
  * to-do list:
  * copying constructor
- * operators<< >>
+ * operators<< >> ==
  * tests*/
 
 template <typename Key, typename Value> class Iterator;
@@ -21,10 +21,12 @@ class AuditoryMap
         root = NULL;
     }
     friend class Iterator<Key,Value>;
-
     //typedef Iterator<Key,Value> const_iterator;
     Value operator[](const Key);
-
+    ~AuditoryMap(){
+        Node *node = root;
+        cleanup(node);
+    }
     Iterator<Key, Value> end() {return Iterator<Key, Value>(this->Maximum(root));}
     Iterator<Key, Value> begin() {return Iterator<Key, Value>(this->Minimum(root));}
     template<class T, class N>
@@ -141,6 +143,7 @@ class AuditoryMap
         count++;
     }
 
+
  bool contains(const Key& key)                                          //проверка наличия ключа
   {
      Node *node = root;
@@ -177,10 +180,7 @@ class AuditoryMap
             }
         }
 
-        if (!node || node->key != key)
-        {
-            throw runtime_error("Cannot Delete: value with requested key not found");
-        }
+        //if (!node || node->key != key){throw runtime_error("Cannot Delete: value with requested key not found");}
 
         if (!node->left || !node->right )
         {
@@ -330,7 +330,7 @@ class AuditoryMap
 
         }
 
-        throw runtime_error("No value with requested key");
+        //throw runtime_error("No value with requested key");
     }
 
 
@@ -404,16 +404,27 @@ class AuditoryMap
         displayInfo(node->right, spaces + 1);
     }
 
+  void cleanup (Node *tn)
+  { if(!tn) return;
+      if(tn->left){
+          cleanup(tn->left);
+          delete(tn->left);
+      }
+      if(tn->right){
+          cleanup(tn->right);
+          delete(tn->right);
+      }
+      delete tn;
+  }
+
   int size(){
       return count;
   }
 
   inline void clear()
   {
-    delete (root);
-      root = NULL;
-    //root = new Node;
-    //root->parent = nullptr;
+    cleanup(root);
+    root = NULL;
     count = 0;
   }
 
@@ -535,6 +546,25 @@ private:
         return tree;
     }
 
+  AuditoryMap(const Node &tn)
+  { if(!tn) return;
+      Node node = new Node();
+      if(tn->left){
+          node.left = new Node();
+          node.left.key = tn.left.key;
+          node.left.value = tn.left.value;
+          node.left.colour = tn.left.colour;
+          AuditoryMap(tn->left);
+      }
+      if(tn->right){
+          node.right = new Node();
+          node.right.key = tn.right.key;
+          node.right.value = tn.right.value;
+          node.right.colour = tn.right.colour;
+          AuditoryMap(tn->right);
+      }
+  }
+
 };
 
 template <typename keyType, typename valueType> valueType AuditoryMap<keyType, valueType>::operator [](keyType key)
@@ -553,9 +583,8 @@ public:
     #define NIL &sentinel           /* all leafs are sentinels */
     typename AuditoryMap<Key, valueType>::Node sentinel;
     Iterator(typename AuditoryMap<Key, valueType>::Node *x);
-    Iterator operator++(int);
     Iterator next();
-    Key getKey();
+    Key key();
     valueType value();
     typename AuditoryMap<Key, valueType>::Node *currNode;
 
@@ -568,26 +597,9 @@ Iterator<Key, valueType>::Iterator(typename AuditoryMap<Key, valueType>::Node *x
     //sentinel = {0,0, nullptr, nullptr, false, NULL};
 }
 
-template <typename Key, typename valueType>
-Iterator<Key, valueType> Iterator<Key, valueType>::operator ++(int)
-{
-    if(currNode->right->_key != NULL)
-    {
-        currNode = currNode->right;
-        while(currNode->left != NIL && currNode->left->_key != NULL)
-            currNode = currNode->left;
-    }
-    else
-    {
-        while (currNode != currNode->p->left)
-            currNode = currNode->p;
-        currNode = currNode->p;
-    }
-    return *this;
-}
 
 template <typename Key, typename valueType>
-Key Iterator<Key, valueType>::getKey()
+Key Iterator<Key, valueType>::key()
 {
 return currNode->key;
 }
@@ -617,4 +629,24 @@ Iterator<T,N> Iterator<T,N>::next()
 
     return *this;
 }
+
+template <typename keyType, typename valueType>
+istream& operator >>(istream& is, AuditoryMap<keyType, valueType>& another)
+{
+    //another.erase();
+    keyType key; valueType value;
+    while(!is.eof())
+    {
+        is >> key;
+        is >> value;
+        another.insert(key, value);
+    }
+    return is;
+}
+template <typename keyType, typename valueType>
+ostream& operator <<(ostream& os, AuditoryMap<keyType, valueType>& another)
+{
+    another.displayInfo();
+}
+
 #endif // AUDITORY_MAP_H

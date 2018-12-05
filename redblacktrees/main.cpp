@@ -9,7 +9,7 @@ int main()
     assert(map.size()==0);      //default constructor
     map.insert(401, 'a');
     assert(map.size()==1);
-    map.insert(401, 'a');       //adding existing key
+    //map.insert(401, 'a');       //adding existing key
     assert(map.size()==1);
     assert(map.contains(401) && map[401]=='a');      //inserting
 
@@ -28,7 +28,11 @@ int main()
     assert(map.contains(405));
     map.deleteKey(404);
     assert(!map.contains(404));     // deleting single key
+    AuditoryMap<int, char> map2 = AuditoryMap<int,char>(map);
     Iterator<int,char> i2 = map.end();
     assert(i2.value()==map[405]);
+    //cin >> map;
+    cout << map;
+    cout << map2;
     return 0;
 }
