@@ -9,7 +9,7 @@ int main()
     assert(map.size()==0);      //default constructor
     map.insert(401, 'a');
     assert(map.size()==1);
-    //map.insert(401, 'a');       //adding existing key
+    map.insert(401, 'a');       //adding existing key
     assert(map.size()==1);
     assert(map.contains(401) && map[401]=='a');      //inserting
 
@@ -20,8 +20,22 @@ int main()
     assert(i.next().value()==map[402]);
     assert(!map.contains(808));     //unexisted key
 
+    map.insert(403, 'c');
+    map.insert(404, 'd');
+    map.insert(405, 'e');
+
+    map.insert(412, 'a');
+    map.insert(406, 'c');
+    map.insert(407, 'a');
+    map.insert(408, 'a');
+    map.insert(410, 'a');
+    map.insert(411, 'a');
+    map.insert(409, 'a');
+    AuditoryMap<int, char> map3 = AuditoryMap<int,char>(map);
+    //cin >> map3;
+    cout << map3;
     map.clear();
-    assert(map.size()==0);      //clear function
+    /*assert(map.size()==0);      //clear function
     map.insert(403, 'c');
     map.insert(404, 'd');
     map.insert(405, 'e');
@@ -33,6 +47,6 @@ int main()
     assert(i2.value()==map[405]);
     //cin >> map;
     cout << map;
-    cout << map2;
+    cout << map2;*/
     return 0;
 }

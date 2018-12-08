@@ -6,9 +6,9 @@ using namespace std;
 
 /*
  * to-do list:
- * copying constructor
- * operators<< >> ==
- * tests*/
+ * operators >> ==
+ * tests
+ * interface */
 
 template <typename Key, typename Value> class Iterator;
 template<typename Key, typename Value>
@@ -25,7 +25,7 @@ class AuditoryMap
     Value operator[](const Key);
     ~AuditoryMap(){
         Node *node = root;
-        cleanup(node);
+        //cleanup(node);
     }
     Iterator<Key, Value> end() {return Iterator<Key, Value>(this->Maximum(root));}
     Iterator<Key, Value> begin() {return Iterator<Key, Value>(this->Minimum(root));}
@@ -39,6 +39,7 @@ class AuditoryMap
 
     void insert(const Key& key, const Value& value)						// функция вставки
     {
+        if (contains(key)) return;
         Node *node, *parent, *z, *u;
         parent = NULL;
         node = root;
@@ -63,6 +64,7 @@ class AuditoryMap
             z->value = value;
             z->colour = BLACK;
             z->parent = z->left = z->right = NULL;
+            ++count;
         }
 
         else
@@ -73,7 +75,7 @@ class AuditoryMap
             z->colour = RED;
             z->parent = parent;
             z->left = z->right = NULL;
-
+            ++count;
             if (z->key < parent->key)
             {
                 parent->left = z;
@@ -140,9 +142,8 @@ class AuditoryMap
 
             root->colour = BLACK;
         }
-        count++;
+        //count++;
     }
-
 
  bool contains(const Key& key)                                          //проверка наличия ключа
   {
@@ -363,11 +364,6 @@ class AuditoryMap
     }
 
 
-
-
-
-
-
   enum NodeColour
     {
         RED,
@@ -424,7 +420,7 @@ class AuditoryMap
   inline void clear()
   {
     cleanup(root);
-    root = NULL;
+    root = nullptr;
     count = 0;
   }
 
@@ -630,23 +626,45 @@ Iterator<T,N> Iterator<T,N>::next()
     return *this;
 }
 
-template <typename keyType, typename valueType>
-istream& operator >>(istream& is, AuditoryMap<keyType, valueType>& another)
+template <typename Node_key, typename Node_value>
+istream& operator >>(istream& is, AuditoryMap<Node_key, Node_value>& another)
 {
-    //another.erase();
-    keyType key; valueType value;
-    while(!is.eof())
+    int c;
+    Node_key key;
+    Node_value value;
+    is >> c;
+    for (int i = 0; i < c; i++)
     {
-        is >> key;
-        is >> value;
-        another.insert(key, value);
+        is >> key >> value;
+        another.insert(key,value);
     }
     return is;
 }
-template <typename keyType, typename valueType>
-ostream& operator <<(ostream& os, AuditoryMap<keyType, valueType>& another)
+template <typename Node_key, typename Node_value>
+ostream& operator <<(ostream& os, AuditoryMap<Node_key, Node_value>& another)
 {
-    another.displayInfo();
+    os << another.size() << '\n';
+
+    for (Iterator<Node_key, Node_value> i = another.begin(); i.key() != another.end().key() ; i.next())
+        os << i.key() << " " << i.value() <<"\n";
+    os << another.end().key() <<" "<< another.end().value();
+    return os;
 }
+
+
+
+/*template <typename keyType, typename valueType>
+ostream& operator ==(AuditoryMap<keyType, valueType>& another)
+{ if(!tn) return;
+    if(tn->left){
+        cleanup(tn->left);
+        delete(tn->left);
+    }
+    if(tn->right){
+        cleanup(tn->right);
+        delete(tn->right);
+    }
+    delete tn;
+}*/
 
 #endif // AUDITORY_MAP_H
