@@ -32,7 +32,8 @@ int main()
     map.insert(411, 'a');
     map.insert(409, 'a');
     AuditoryMap<int, char> map3 = AuditoryMap<int,char>(map);
-    //cin >> map3;
+    assert(map==map3);
+    cin >> map3;
     cout << map3;
     map.clear();
     /*assert(map.size()==0);      //clear function

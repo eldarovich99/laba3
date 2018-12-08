@@ -6,8 +6,6 @@ using namespace std;
 
 /*
  * to-do list:
- * operators >> ==
- * tests
  * interface */
 
 template <typename Key, typename Value> class Iterator;
@@ -645,13 +643,24 @@ ostream& operator <<(ostream& os, AuditoryMap<Node_key, Node_value>& another)
 {
     os << another.size() << '\n';
 
-    for (Iterator<Node_key, Node_value> i = another.begin(); i.key() != another.end().key() ; i.next())
+    for (auto i = another.begin(); i.key() != another.end().key() ; i.next())
         os << i.key() << " " << i.value() <<"\n";
     os << another.end().key() <<" "<< another.end().value();
     return os;
 }
 
-
+template<typename Key, typename Value>
+bool AuditoryMap<Key, Value>::operator==(AuditoryMap & _other)
+{
+    if(count != _other.count)
+        return false;
+    for (auto i = this->begin(); i.key() != _other.end().key(); i.next())
+    {
+        if (!(i.value() == _other[i.key()]))
+            return false;
+    }
+    return true;
+}
 
 /*template <typename keyType, typename valueType>
 ostream& operator ==(AuditoryMap<keyType, valueType>& another)
