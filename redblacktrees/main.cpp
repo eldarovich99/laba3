@@ -29,18 +29,26 @@ int main()
     assert(map==map3);      // copying constructor
     map3.insert(802, 'g');
     assert(!(map==map3));
-    //cin >> map3;
-    cout << map3;
-    map.clear();
+
+    int prevSize = map.size();
+    map.deleteKey(900);     //deleting unexisted key
+    assert(prevSize == map.size());
+
+    map.clear();    //clear function
+    assert(!map.contains(404));     // check deleted key
     AuditoryMap<int, char> map4;
     assert(map==map4);
-    /*assert(map.size()==0);      //clear function
+
+    cin >> map3;
+    cout << map3;
+
+
+    /*assert(map.size()==0);
     map.insert(403, 'c');
     map.insert(404, 'd');
     map.insert(405, 'e');
     assert(map.contains(405));
     map.deleteKey(404);
-    assert(!map.contains(404));     // deleting single key
     AuditoryMap<int, char> map2 = AuditoryMap<int,char>(map);
     Iterator<int,char> i2 = map.end();
     assert(i2.value()==map[405]);

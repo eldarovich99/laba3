@@ -156,6 +156,7 @@ class AuditoryMap
 
   void deleteKey(const Key& key)													//функция удаления
     {
+      if (!contains(key)) return;
         Node *node = root;
         Node *y, *x;
 
@@ -380,7 +381,6 @@ class AuditoryMap
           cleanup(tn->right);
           delete(tn->right);
       }
-      //delete tn;
   }
 
   int size(){
