@@ -23,19 +23,17 @@ int main()
     map.insert(403, 'c');
     map.insert(404, 'd');
     map.insert(405, 'e');
-
     map.insert(412, 'a');
-    map.insert(406, 'c');
-    map.insert(407, 'a');
-    map.insert(408, 'a');
-    map.insert(410, 'a');
-    map.insert(411, 'a');
-    map.insert(409, 'a');
+
     AuditoryMap<int, char> map3 = AuditoryMap<int,char>(map);
-    assert(map==map3);
-    cin >> map3;
+    assert(map==map3);      // copying constructor
+    map3.insert(802, 'g');
+    assert(!(map==map3));
+    //cin >> map3;
     cout << map3;
     map.clear();
+    AuditoryMap<int, char> map4;
+    assert(map==map4);
     /*assert(map.size()==0);      //clear function
     map.insert(403, 'c');
     map.insert(404, 'd');

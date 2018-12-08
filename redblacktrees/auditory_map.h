@@ -21,10 +21,6 @@ class AuditoryMap
     friend class Iterator<Key,Value>;
     //typedef Iterator<Key,Value> const_iterator;
     Value operator[](const Key);
-    ~AuditoryMap(){
-        Node *node = root;
-        //cleanup(node);
-    }
     Iterator<Key, Value> end() {return Iterator<Key, Value>(this->Maximum(root));}
     Iterator<Key, Value> begin() {return Iterator<Key, Value>(this->Minimum(root));}
     template<class T, class N>
@@ -332,30 +328,6 @@ class AuditoryMap
         //throw runtime_error("No value with requested key");
     }
 
-
-  /*Value minimumValue ()
-    {
-        Node *x =root;
-        while (x->left)
-        {
-            x = x->left;
-        }
-
-        return x->key;
-    }
-
-  Value maximumValue ()
-    {
-        Node *x =root;
-
-        while (x->right)
-        {
-            x = x->right;
-        }
-
-        return x->key;
-    }*/
-
   void displayInfo()
     {
         displayInfo(root, 0);
@@ -408,7 +380,7 @@ class AuditoryMap
           cleanup(tn->right);
           delete(tn->right);
       }
-      delete tn;
+      //delete tn;
   }
 
   int size(){
@@ -419,6 +391,7 @@ class AuditoryMap
   {
     cleanup(root);
     root = nullptr;
+    //delete(root);
     count = 0;
   }
 
@@ -607,10 +580,10 @@ return currNode->value;
 template<class T, class N>
 Iterator<T,N> Iterator<T,N>::next()
 {
-    if (currNode->right != nullptr)      //_pointer->right->value != nullptr
+    if (currNode->right != nullptr)
     {
         currNode = currNode->right;
-        while (currNode->left != nullptr && currNode->left->value != NULL)       //(_pointer->left != nullptr && _pointer->left->value != nullptr)
+        while (currNode->left != nullptr && currNode->left->value != NULL)
                 currNode = currNode->left;
     }
     else
@@ -654,6 +627,8 @@ bool AuditoryMap<Key, Value>::operator==(AuditoryMap & _other)
 {
     if(count != _other.count)
         return false;
+    if(count ==  0 &&_other.count==0)
+        return true;
     for (auto i = this->begin(); i.key() != _other.end().key(); i.next())
     {
         if (!(i.value() == _other[i.key()]))
@@ -661,19 +636,4 @@ bool AuditoryMap<Key, Value>::operator==(AuditoryMap & _other)
     }
     return true;
 }
-
-/*template <typename keyType, typename valueType>
-ostream& operator ==(AuditoryMap<keyType, valueType>& another)
-{ if(!tn) return;
-    if(tn->left){
-        cleanup(tn->left);
-        delete(tn->left);
-    }
-    if(tn->right){
-        cleanup(tn->right);
-        delete(tn->right);
-    }
-    delete tn;
-}*/
-
 #endif // AUDITORY_MAP_H
